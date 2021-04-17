@@ -1,0 +1,3 @@
+{:watch ["src/gopro_flare"]
+ :main "src/gopro_flare/core.clj"
+ :dest "build/main.scad"}

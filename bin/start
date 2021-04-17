@@ -1,0 +1,7 @@
+#!/bin/env bash
+echo "starting watch and nrepl"
+set -e
+
+trap "killall openscad" SIGINT SIGTERM EXIT
+openscad build/main.scad 2> /dev/null &
+clj -M:watch
