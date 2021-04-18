@@ -37,4 +37,37 @@ union () {
       }
     }
   }
+  translate ([0, 6.25, 0.9]) {
+    rotate ([0.0,-90.0,0.0]) {
+      linear_extrude (height=5.5, center=true){
+        polygon (points=[[0, 0], [0, 2.2], [1, 2.2]]);
+      }
+    }
+  }
+  translate ([0, 14.15, 0.5]) {
+    rotate ([-80.0,0.0,0.0]) {
+      minkowski () {
+        union () {
+          linear_extrude (height=2.25, center=true){
+            translate ([-5, 0, 0]) {
+              intersection () {
+                square ([10, 7.75]);
+                translate ([5, 5, ]) {
+                  circle (r=5.5);
+                }
+              }
+            }
+          }
+          translate ([0, 7.05, 0.9]) {
+            rotate ([-14.999999999999998,0.0,0.0]) {
+              linear_extrude (height=3.5, center=true){
+                square ([10, 2.25], center=true);
+              }
+            }
+          }
+        }
+        sphere (r=0.3);
+      }
+    }
+  }
 }

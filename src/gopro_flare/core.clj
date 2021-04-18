@@ -20,6 +20,8 @@
 
         tab-extrusion-width 5.5
         tab-extrusion-height 10.3
+        tab-extrusion-offset 10
+
         cut-out-thickness 1.68
         cut-out-depth 2.75
         chamfer 0.5
@@ -35,7 +37,7 @@
               ; tab extrusion
               (maybe/translate
                 [0
-                 10]
+                 tab-extrusion-offset]
                 (m/square tab-extrusion-width tab-extrusion-height)))
             ; cutouts
             (maybe/translate
@@ -62,7 +64,54 @@
             [spline-x
              (- (/ flare-mount-width 4))
              spline-z]
-            (spline spline-length)))))))
+            (spline spline-length))))
+      ; tab claw
+      (maybe/translate
+        [0
+         (/ flare-mount-width 2)
+         (- (/ flare-mount-thickness 2) 0.1)]
+        (maybe/rotate
+          [0 (m/deg->rad -90) 0]
+          (m/extrude-linear
+           {:height 5.5}
+           (m/polygon [[0 0] [0 2.2] [1 2.2]]))))
+
+      (let [tab-width 10
+            tab-height 7.75
+            camfer 0.3]
+
+        ; tab head
+        (maybe/translate
+          [0
+           (- (+ (/ tab-extrusion-height 2) tab-extrusion-offset) 1)
+           (- (/ flare-mount-thickness 2) 0.5)]
+
+          (maybe/rotate
+            [(m/deg->rad -80) 0 0]
+            (m/minkowski
+              (maybe/union
+                (m/extrude-linear
+                  {:height 2.25}
+                  (maybe/translate
+                    [(- (/ tab-width 2)) 0 0]
+                    (maybe/intersection
+                      (m/square tab-width tab-height :center false)
+                      (maybe/translate
+                        [5 5]
+                        (m/circle 5.5)))))
+                ; tab thumb stop
+                (maybe/translate
+                  [0
+                   (- tab-height 0.7)
+                   (- (/ flare-mount-thickness 2) 0.1)]
+                  (maybe/rotate
+                    [(m/deg->rad -15)
+                     0
+                     0]
+                    (m/extrude-linear
+                      {:height 3.5}
+                      (m/square 10 2.25)))))
+              (m/sphere camfer))))))))
 
 (defn main []
   [(m/fn! 50)
