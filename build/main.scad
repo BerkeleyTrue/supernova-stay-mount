@@ -28,7 +28,7 @@ union () {
         }
       }
     }
-    translate ([-5.2, -3.125, 0.75]) {
+    translate ([-5.2, -4.125, 0.75]) {
       hull () {
         sphere (r=0.7);
         translate ([10.4, 0, 0]) {

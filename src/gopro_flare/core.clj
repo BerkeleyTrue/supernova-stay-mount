@@ -62,7 +62,7 @@
 
           (maybe/translate
             [spline-x
-             (- (/ flare-mount-width 4))
+             (- (+ (/ flare-mount-width 4) 1))
              spline-z]
             (spline spline-length))))
       ; tab claw
