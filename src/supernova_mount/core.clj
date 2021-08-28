@@ -1,4 +1,4 @@
-(ns gopro-flare.core
+(ns supernova-mount.core
   (:require [scad-clj.model :as m]
             [scad-tarmi.maybe :as maybe]))
 

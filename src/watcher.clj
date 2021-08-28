@@ -5,7 +5,7 @@
             [nrepl.server :as nrepl]
             [nrepl.cmdline :refer [save-port-file]]
             [cider.nrepl :as cider]
-            [gopro-flare.core :refer [main]]))
+            [supernova-mount.core :refer [main]]))
 
 
 (def paths (read-config "paths.edn"))
@@ -15,7 +15,7 @@
 
 (defn build-scad []
   (println "building")
-  (use 'gopro-flare.core :reload-all)
+  (use 'supernova-mount.core :reload-all)
   (->>
     (main)
     (apply write-scad)
