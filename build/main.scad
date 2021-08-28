@@ -1,72 +1,42 @@
 $fn = 50;
-union () {
-  minkowski () {
-    linear_extrude (height=1.5, center=true){
-      difference () {
-        union () {
-          square ([15.5, 12.0], center=true);
-          translate ([0, 10, ]) {
-            square ([5.5, 10.3], center=true);
-          }
-        }
-        translate ([2.75, 3.5, ]) {
-          square ([1.68, 2.75]);
-        }
-        translate ([-4.43, 3.5, ]) {
-          square ([1.68, 2.75]);
-        }
-      }
-    }
-    sphere (r=0.25);
-  }
-  union () {
-    translate ([-5.2, 1.76, 0.75]) {
-      hull () {
-        sphere (r=0.7);
-        translate ([10.4, 0, 0]) {
-          sphere (r=0.7);
-        }
-      }
-    }
-    translate ([-5.2, -4.125, 0.75]) {
-      hull () {
-        sphere (r=0.7);
-        translate ([10.4, 0, 0]) {
-          sphere (r=0.7);
-        }
-      }
-    }
-  }
-  translate ([0, 6.25, 0.9]) {
-    rotate ([0.0,-90.0,0.0]) {
-      linear_extrude (height=5.5, center=true){
-        polygon (points=[[0, 0], [0, 2.2], [1, 2.2]]);
-      }
-    }
-  }
-  translate ([0, 14.15, 0.5]) {
-    rotate ([-80.0,0.0,0.0]) {
-      minkowski () {
-        union () {
-          linear_extrude (height=2.25, center=true){
-            translate ([-5, 0, 0]) {
-              intersection () {
-                square ([10, 7.75]);
-                translate ([5, 5, ]) {
-                  circle (r=5.5);
-                }
-              }
+translate ([0, 0, 5/2]) {
+  linear_extrude (height=5, center=true){
+    difference () {
+      union () {
+        difference () {
+          union () {
+            translate ([0, -5.75, ]) {
+              square ([24.95, 11.5]);
+            }
+            translate ([24.95, 0, ]) {
+              circle (r=5.75);
             }
           }
-          translate ([0, 7.05, 0.9]) {
-            rotate ([-14.999999999999998,0.0,0.0]) {
-              linear_extrude (height=3.5, center=true){
-                square ([10, 2.25], center=true);
+          translate ([25, 0, ]) {
+            circle (r=5/2);
+          }
+        }
+        mirror ([1, 0, 0]) {
+          difference () {
+            union () {
+              translate ([0, -5.75, ]) {
+                square ([24.95, 11.5]);
               }
+              translate ([24.95, 0, ]) {
+                circle (r=5.75);
+              }
+            }
+            translate ([25, 0, ]) {
+              circle (r=5/2);
             }
           }
         }
-        sphere (r=0.3);
+      }
+      union () {
+        circle (r=11/2);
+        translate ([0, 11/2, ]) {
+          square ([11, 11], center=true);
+        }
       }
     }
   }
