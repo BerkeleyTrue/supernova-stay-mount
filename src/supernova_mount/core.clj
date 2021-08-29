@@ -31,22 +31,32 @@
         [0 radius]
         (m/square (* radius 2) (* radius 2))))))
 
+(defn reinforcement []
+  (let [radius 20]
+    (maybe/intersection
+      (maybe/translate
+        [0 -10.5]
+        (m/square 30 10))
+      (maybe/translate
+        [0 (* radius 0.55)]
+        (m/circle radius)))))
 
 (defn sp-mount []
-  (let [thickness 5]
+  (let [thickness 7]
     (maybe/translate
       [0 0 (/ thickness 2)]
 
       (m/extrude-linear
         {:height thickness}
-        (maybe/difference
-          (maybe/union
-            (sp-mount-side)
-            (maybe/mirror
-              [1 0 0]
-              (sp-mount-side)))
-          (cord-cutout))))))
-
+        (maybe/union
+          (maybe/difference
+            (maybe/union
+              (sp-mount-side)
+              (maybe/mirror
+                [1 0 0]
+                (sp-mount-side)))
+            (cord-cutout))
+          (reinforcement))))))
 
 
 (defn body []
