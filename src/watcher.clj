@@ -1,5 +1,5 @@
 (ns watcher
-  (:require [clojure.core.async :refer [chan go-loop <! >! >!! timeout alts! close!]]
+  (:require [clojure.core.async :refer [chan go-loop <! >! >!! timeout alts!]]
             [hawk.core :as hawk]
             [scad-clj.scad :refer [write-scad]]
             [aero.core :refer [read-config]]
@@ -45,9 +45,8 @@
           ; no new inputs in ms window
           timer (do
                   ; call out to out channel
-                  (when (>! out val)
+                  (>! out val)
                     ; when out is closed close in
-                    (close! in))
                   ; clear previous value
                   (recur nil))
           ; new input
@@ -59,12 +58,12 @@
 (defn build-scad []
   (println "building...")
   (use 'supernova-mount.core :reload-all)
-  (time
+  (let [start (. System (nanoTime))]
     (->>
       (main)
       (apply write-scad)
-      (spit (:dest paths))))
-  (println "done building!"))
+      (spit (:dest paths)))
+    (println (str "Build completed in " (/ (double (- (. System (nanoTime)) start)) 1000000.0) " ms"))))
 
 (defn start-nrepl []
   (->
