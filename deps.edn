@@ -1,6 +1,7 @@
 {:paths ["src"]
  :deps
  {org.clojure/clojure {:mvn/version "1.10.2"}
+  org.clojure/core.async {:mvn/version "1.3.618"}
   scad-clj/scad-clj {:mvn/version "0.5.3"}
   scad-tarmi/scad-tarmi {:mvn/version "0.6.0"}
   hawk/hawk {:mvn/version "0.2.11"}

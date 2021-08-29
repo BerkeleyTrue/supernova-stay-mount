@@ -1,5 +1,6 @@
 (ns watcher
-  (:require [hawk.core :as hawk]
+  (:require [clojure.core.async :refer [chan go go-loop take! <! >! >!! timeout alts!]]
+            [hawk.core :as hawk]
             [scad-clj.scad :refer [write-scad]]
             [aero.core :refer [read-config]]
             [nrepl.server :as nrepl]
@@ -12,6 +13,21 @@
 
 (defonce ^:private watcher (atom nil))
 (defonce ^:private repl-server (atom nil))
+
+(defn debounce [in ms]
+  (let [out (chan)]
+    (go-loop [last-val nil]
+      (let [val (if (nil? last-val)
+                  (<! in)
+                  last-val)
+            timer (timeout ms)
+            [new-val ch] (alts! [in timer])]
+        (condp = ch
+          timer (do
+                  (>! out val)
+                  (recur nil))
+          in (recur new-val))))
+    out))
 
 (defn build-scad []
   (println "building")
@@ -36,15 +52,19 @@
     (reset! repl-server nil)))
 
 (defn start-watching []
-  (->>
-    (hawk/watch!
-      [{:paths (:watch paths)
-        :filter hawk/file?
-        :handler
-        (fn [ctx _]
-          (build-scad)
-          ctx)}])
-    (reset! watcher)))
+  (let [in (chan)
+        out (debounce in 250)]
+
+    (go (take! out (fn [_] (build-scad))))
+    (->>
+      (hawk/watch!
+        [{:paths (:watch paths)
+          :filter hawk/modified?
+          :handler
+          (fn [ctx e]
+            (>!! in e)
+            ctx)}])
+      (reset! watcher))))
 
 (defn stop-watcher []
   (when watcher
