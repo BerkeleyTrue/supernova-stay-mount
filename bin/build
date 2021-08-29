@@ -3,4 +3,4 @@ echo "building stl"
 set -e
 
 trap "killall openscad" SIGINT SIGTERM EXIT
-openscad build/main.scad -o build/main.stl
+openscad build/main.scad -o "build/${1:-supernova-mount.stl}"
