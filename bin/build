@@ -1,0 +1,6 @@
+#!/bin/env bash
+echo "building stl"
+set -e
+
+trap "killall openscad" SIGINT SIGTERM EXIT
+openscad build/main.scad -o build/main.stl
