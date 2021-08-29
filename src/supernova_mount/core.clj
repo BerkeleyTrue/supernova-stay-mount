@@ -2,23 +2,22 @@
   (:require [scad-clj.model :as m]
             [scad-tarmi.maybe :as maybe]))
 
-
+(def sp-mount-width 11.5)
 
 (defn sp-mount-side []
-  (let [width 11.5
-        length (/ 61.4 2)
-        pre-cut-length (- length (/ width 2))
+  (let [length (/ 61.4 2)
+        pre-cut-length (- length (/ sp-mount-width 2))
         mount-hole-radius (/ 5 2)
         mounting-width (/ 50 2)]
 
     (maybe/difference
       (maybe/union
         (maybe/translate
-          [0 (- (/ width 2))]
-          (m/square pre-cut-length width :center false))
+          [0 (- (/ sp-mount-width 2))]
+          (m/square pre-cut-length sp-mount-width :center false))
         (maybe/translate
           [pre-cut-length 0]
-          (m/circle (/ width 2))))
+          (m/circle (/ sp-mount-width 2))))
       (maybe/translate
         [mounting-width 0]
         (m/circle mount-hole-radius)))))
@@ -59,8 +58,32 @@
           (reinforcement))))))
 
 
+(defn frame-mount []
+  (let [mount-hole-radius (/ 5.25 2)
+        frame-mounting-bose 10
+        frame-mount-thick 5
+        mount-height (- 30 (/ frame-mounting-bose 2))]
+
+    (maybe/translate
+      [10 (- (/ (+ sp-mount-width frame-mount-thick) 2))]
+      (maybe/rotate
+        [(m/deg->rad 90) 0 0]
+        (m/extrude-linear
+          {:height frame-mount-thick}
+          (maybe/difference
+            (maybe/union
+              (m/square frame-mounting-bose mount-height :center false)
+              (maybe/translate
+                [(/ frame-mounting-bose 2) mount-height]
+                (m/circle (/ frame-mounting-bose 2))))
+            (maybe/translate
+              [(/ frame-mounting-bose 2) mount-height]
+              (m/circle mount-hole-radius))))))))
+
 (defn body []
-  (sp-mount))
+  (maybe/union
+    (sp-mount)
+    (frame-mount)))
 
 (defn main []
   [(m/fn! 50)
