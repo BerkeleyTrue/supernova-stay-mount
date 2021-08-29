@@ -1,5 +1,5 @@
 (ns watcher
-  (:require [clojure.core.async :refer [chan go go-loop take! <! >! >!! timeout alts!]]
+  (:require [clojure.core.async :refer [chan go-loop <! >! >!! timeout alts! close!]]
             [hawk.core :as hawk]
             [scad-clj.scad :refer [write-scad]]
             [aero.core :refer [read-config]]
@@ -14,28 +14,57 @@
 (defonce ^:private watcher (atom nil))
 (defonce ^:private repl-server (atom nil))
 
-(defn debounce [in ms]
-  (let [out (chan)]
+(defn debounce-fn [in-fn ms]
+  (let [out (chan)
+        in (chan)]
+
+    ; consumer
+    (go-loop []
+      ; wait and take messages out
+      (<! out)
+      ; call func
+      (in-fn)
+      ; loop back and wait
+      (recur))
+
+    ; observer
     (go-loop [last-val nil]
       (let [val (if (nil? last-val)
+                  ; if val is nil, wait for new input
                   (<! in)
                   last-val)
+            ; new channel that closes in ms
             timer (timeout ms)
+            ; alts races both channels
+            ; which ever responds first wins
+            ; loser is closed?
             [new-val ch] (alts! [in timer])]
+
         (condp = ch
+          ; timer responded first
+          ; no new inputs in ms window
           timer (do
-                  (>! out val)
+                  ; call out to out channel
+                  (when (>! out val)
+                    ; when out is closed close in
+                    (close! in))
+                  ; clear previous value
                   (recur nil))
+          ; new input
+          ; update cached value and loop
           in (recur new-val))))
-    out))
+    ; return new function to be called
+    #(>!! in %)))
 
 (defn build-scad []
-  (println "building")
+  (println "building...")
   (use 'supernova-mount.core :reload-all)
-  (->>
-    (main)
-    (apply write-scad)
-    (spit (:dest paths))))
+  (time
+    (->>
+      (main)
+      (apply write-scad)
+      (spit (:dest paths))))
+  (println "done building!"))
 
 (defn start-nrepl []
   (->
@@ -52,17 +81,14 @@
     (reset! repl-server nil)))
 
 (defn start-watching []
-  (let [in (chan)
-        out (debounce in 250)]
-
-    (go (take! out (fn [_] (build-scad))))
+  (let [on-change (debounce-fn build-scad 250)]
     (->>
       (hawk/watch!
         [{:paths (:watch paths)
           :filter hawk/modified?
           :handler
           (fn [ctx e]
-            (>!! in e)
+            (on-change e)
             ctx)}])
       (reset! watcher))))
 
