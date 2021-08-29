@@ -40,23 +40,40 @@
         [0 (* radius 0.55)]
         (m/circle radius)))))
 
+(defn hex-lock []
+  (m/with-fn 6
+    (m/cylinder (/ 7.25 2) 5)))
+
 (defn sp-mount []
-  (let [thickness 7]
-    (maybe/translate
-      [0 0 (/ thickness 2)]
+  (let [thickness 8
+        mounting-width 50]
 
-      (m/extrude-linear
-        {:height thickness}
-        (maybe/union
-          (maybe/difference
-            (maybe/union
-              (sp-mount-side)
-              (maybe/mirror
-                [1 0 0]
-                (sp-mount-side)))
-            (cord-cutout))
-          (reinforcement))))))
 
+    (maybe/difference
+      (maybe/translate
+        [0 0 (/ thickness 2)]
+
+        (m/extrude-linear
+          {:height thickness}
+          (maybe/union
+            (maybe/difference
+              (maybe/union
+                (sp-mount-side)
+                (maybe/mirror
+                  [1 0 0]
+                  (sp-mount-side)))
+
+              (cord-cutout))
+
+            (reinforcement))))
+
+      (maybe/translate
+        [(/ mounting-width 2) 0 (- thickness 2)]
+        (hex-lock))
+
+      (maybe/translate
+        [(- (/ mounting-width 2)) 0 (- thickness 2)]
+        (hex-lock)))))
 
 (defn frame-mount []
   (let [mount-hole-radius (/ 5.25 2)
