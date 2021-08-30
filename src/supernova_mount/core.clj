@@ -87,7 +87,12 @@
         mount-height (- 30 (/ frame-mounting-bose 2))]
 
     (maybe/translate
-      [10 (- (/ (+ sp-mount-width frame-mount-thick) 2))]
+      [10
+       (->
+         sp-mount-width
+         (- frame-mount-thick)
+         (/ 2)
+         (-))]
       (maybe/rotate
         [(m/deg->rad 90) 0 0]
         (m/extrude-linear

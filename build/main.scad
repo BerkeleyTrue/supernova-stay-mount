@@ -60,7 +60,7 @@ union () {
       cylinder ($fn=6, h=5, r=3.75, center=true);
     }
   }
-  translate ([10, -8.25, ]) {
+  translate ([10, -3.25, ]) {
     rotate ([90.0,0.0,0.0]) {
       linear_extrude (height=5, center=true){
         difference () {
