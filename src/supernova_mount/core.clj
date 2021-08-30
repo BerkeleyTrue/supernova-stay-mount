@@ -41,13 +41,18 @@
         (m/circle radius)))))
 
 (defn hex-lock []
-  (m/with-fn 6
-    (m/cylinder (/ 7.25 2) 5)))
+  (let [height 5
+        radius (/ 7.5 2)]
+    ; zero z origin
+    (maybe/translate
+      [0 0 (/ height 2)]
+      (m/with-fn 6
+        (m/cylinder radius height)))))
 
 (defn sp-mount []
   (let [thickness 8
-        mounting-width 50]
-
+        mounting-width 50
+        hex-cut-depth 2.75]
 
     (maybe/difference
       (maybe/translate
@@ -68,11 +73,11 @@
             (reinforcement))))
 
       (maybe/translate
-        [(/ mounting-width 2) 0 (- thickness 2)]
+        [(/ mounting-width 2) 0 (- thickness hex-cut-depth)]
         (hex-lock))
 
       (maybe/translate
-        [(- (/ mounting-width 2)) 0 (- thickness 2)]
+        [(- (/ mounting-width 2)) 0 (- thickness hex-cut-depth)]
         (hex-lock)))))
 
 (defn frame-mount []

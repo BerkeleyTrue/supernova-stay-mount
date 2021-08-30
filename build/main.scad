@@ -53,11 +53,11 @@ union () {
         }
       }
     }
-    translate ([25, 0, 6]) {
-      cylinder ($fn=6, h=5, r=3.625, center=true);
+    translate ([25, 0, 7.75]) {
+      cylinder ($fn=6, h=5, r=3.75, center=true);
     }
-    translate ([-25, 0, 6]) {
-      cylinder ($fn=6, h=5, r=3.625, center=true);
+    translate ([-25, 0, 7.75]) {
+      cylinder ($fn=6, h=5, r=3.75, center=true);
     }
   }
   translate ([10, -8.25, ]) {
