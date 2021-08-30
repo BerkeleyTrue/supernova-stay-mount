@@ -1,6 +1,11 @@
 #!/bin/env bash
-echo "building stl"
 set -e
 
-trap "killall openscad" SIGINT SIGTERM EXIT
-openscad build/main.scad -o "build/${1:-supernova-mount.stl}"
+# build scad file
+echo "loading clj build script"
+clj -M:build
+
+# scad to stl
+echo "building stl file"
+openscad build/main.scad -o "build/${1:-supernova-mount.stl}" 2> /dev/null
+echo "done"
