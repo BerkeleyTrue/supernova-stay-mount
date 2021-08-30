@@ -42,7 +42,7 @@
 
 (defn hex-lock []
   (let [height 5
-        radius (/ 7.5 2)]
+        radius (/ 8 2)]
     ; zero z origin
     (maybe/translate
       [0 0 (/ height 2)]
