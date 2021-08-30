@@ -54,10 +54,10 @@ union () {
       }
     }
     translate ([25, 0, 7.75]) {
-      cylinder ($fn=6, h=5, r=4, center=true);
+      cylinder ($fn=6, h=5, r=4.125, center=true);
     }
     translate ([-25, 0, 7.75]) {
-      cylinder ($fn=6, h=5, r=4, center=true);
+      cylinder ($fn=6, h=5, r=4.125, center=true);
     }
   }
   translate ([10, -3.25, ]) {
